@@ -1,0 +1,28 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: vault-auth-test 
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: vaulttest
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: vaulttest
+    spec:
+      serviceAccountName: vault-auth-test 
+      containers:
+      - name: vaulttest
+        image: jpweber/k8s-vault-tester:latest
+        imagePullPolicy: Always
+        env:
+        - name: VAULT_URL
+          value: "<insert your vault url>/v1/auth/kubernetes/login"
+        - name: ROLE
+          value: "<insert your role>"
